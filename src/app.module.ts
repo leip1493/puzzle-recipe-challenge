@@ -1,10 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'secret',
+      database: 'puzzle-recipe',
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,
+    }),
+    CategoryModule,
+  ],
 })
 export class AppModule {}
