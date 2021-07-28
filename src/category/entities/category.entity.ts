@@ -1,18 +1,20 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { WithTimestamps } from '../../shared/entities/with-timestamps.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Recipe } from '../../recipe/entities/recipe.entity';
 
 @ObjectType()
 @Entity()
-export class Category {
+export class Category extends WithTimestamps {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   name: string;
 
-  @Field()
-  @Column()
-  createdAt: Date;
+  @Field(() => [Recipe], { defaultValue: [] })
+  @OneToMany(() => Recipe, (recipe) => recipe.category)
+  recipes: Recipe[];
 }

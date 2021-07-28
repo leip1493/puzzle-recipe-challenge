@@ -13,10 +13,7 @@ export class CategoryService {
   ) {}
 
   create(createCategoryInput: CreateCategoryInput) {
-    const category = this.categoryRepository.create({
-      ...createCategoryInput,
-      createdAt: new Date(),
-    });
+    const category = this.categoryRepository.create(createCategoryInput);
 
     return this.categoryRepository.save(category);
   }

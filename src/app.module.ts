@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from './category/category.module';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CategoryModule } from './category/category.module';
       autoSchemaFile: true,
     }),
     CategoryModule,
+    RecipeModule,
   ],
 })
 export class AppModule {}
