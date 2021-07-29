@@ -59,6 +59,10 @@ export class RecipeService {
     return recipe;
   }
 
+  async getRecipesByCategory(categoryId: string): Promise<Recipe[]> {
+    return this.recipeRepository.find({ where: { category: categoryId } });
+  }
+
   private async searchCategory(categoryId: string) {
     const category = await this.categoryRepository.findOne(categoryId);
 

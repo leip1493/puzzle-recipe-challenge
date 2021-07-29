@@ -1,12 +1,26 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ID,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { CategoryService } from './category.service';
 import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
+import { RecipeService } from '../recipe/recipe.service';
+import { Recipe } from 'src/recipe/entities/recipe.entity';
 
 @Resolver(() => Category)
 export class CategoryResolver {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(
+    private readonly categoryService: CategoryService,
+    private readonly recipeServie: RecipeService,
+  ) {}
 
   @Mutation(() => Category)
   createCategory(
@@ -38,5 +52,10 @@ export class CategoryResolver {
   @Mutation(() => Category, { name: 'deleteCategory' })
   removeCategory(@Args('id', { type: () => ID }) id: string) {
     return this.categoryService.remove(id);
+  }
+
+  @ResolveField(() => [Recipe], { defaultValue: [] })
+  async recipes(@Parent() category: Category) {
+    return this.recipeServie.getRecipesByCategory(category.id);
   }
 }

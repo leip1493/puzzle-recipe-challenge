@@ -8,5 +8,6 @@ import { Category } from '../category/entities/category.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Recipe, Category])],
   providers: [RecipeResolver, RecipeService],
+  exports: [RecipeService],
 })
 export class RecipeModule {}
