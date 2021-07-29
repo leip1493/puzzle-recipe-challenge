@@ -10,7 +10,7 @@ export class Category extends WithTimestamps {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ unique: true })
   name: string;
 
