@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, HideField } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { WithTimestamps } from '../../shared/entities/with-timestamps.entity';
 
@@ -17,7 +17,7 @@ export class User extends WithTimestamps {
   @Column()
   fullname: string;
 
-  @Field(() => String)
+  @HideField()
   @Column()
   password: string;
 }
