@@ -10,11 +10,11 @@ export class Recipe extends WithTimestamps {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
   name: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
   description: string;
 
