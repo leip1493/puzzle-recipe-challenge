@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID, HideField } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Recipe } from 'src/recipe/entities/recipe.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { WithTimestamps } from '../../shared/entities/with-timestamps.entity';
 
 @Entity()
@@ -20,4 +21,8 @@ export class User extends WithTimestamps {
   @HideField()
   @Column()
   password: string;
+
+  @Field(() => [Recipe], { defaultValue: [] })
+  @OneToMany(() => Recipe, (recipe) => recipe.user)
+  recipes: Recipe[];
 }
