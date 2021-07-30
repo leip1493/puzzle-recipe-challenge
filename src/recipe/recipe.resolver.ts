@@ -3,8 +3,11 @@ import { RecipeService } from './recipe.service';
 import { Recipe } from './entities/recipe.entity';
 import { CreateRecipeInput } from './dto/create-recipe.input';
 import { UpdateRecipeInput } from './dto/update-recipe.input';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Recipe)
+@UseGuards(GqlAuthGuard)
 export class RecipeResolver {
   constructor(private readonly recipeService: RecipeService) {}
 

@@ -14,8 +14,11 @@ import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { RecipeService } from '../recipe/recipe.service';
 import { Recipe } from 'src/recipe/entities/recipe.entity';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 
 @Resolver(() => Category)
+@UseGuards(GqlAuthGuard)
 export class CategoryResolver {
   constructor(
     private readonly categoryService: CategoryService,
