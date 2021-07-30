@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ID,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './entities/recipe.entity';
 import { CreateRecipeInput } from './dto/create-recipe.input';
@@ -18,12 +26,17 @@ export class RecipeResolver {
     @CtxUSer() user: User,
     @Args('createRecipeInput') createRecipeInput: CreateRecipeInput,
   ) {
-    return this.recipeService.create(createRecipeInput);
+    return this.recipeService.create(user.id, createRecipeInput);
   }
 
   @Query(() => [Recipe], { name: 'getRecipes' })
   findAll() {
     return this.recipeService.findAll();
+  }
+
+  @Query(() => [Recipe], { name: 'getMyRecipes' })
+  getMyRecipes(@CtxUSer() user: User) {
+    return this.recipeService.getRecipesByUser(user.id);
   }
 
   @Query(() => Recipe, { name: 'getOneRecipe', nullable: true })
@@ -36,7 +49,11 @@ export class RecipeResolver {
     @CtxUSer() user: User,
     @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
   ) {
-    return this.recipeService.update(updateRecipeInput.id, updateRecipeInput);
+    return this.recipeService.update(
+      updateRecipeInput.id,
+      user.id,
+      updateRecipeInput,
+    );
   }
 
   @Mutation(() => Recipe, { name: 'deleteRecipe' })
@@ -44,6 +61,6 @@ export class RecipeResolver {
     @CtxUSer() user: User,
     @Args('id', { type: () => ID }) id: string,
   ) {
-    return this.recipeService.remove(id);
+    return this.recipeService.remove(id, user.id);
   }
 }

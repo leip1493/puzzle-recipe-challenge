@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../category/entities/category.entity';
 import { Repository } from 'typeorm';
 import { CreateRecipeInput } from './dto/create-recipe.input';
 import { UpdateRecipeInput } from './dto/update-recipe.input';
 import { Recipe } from './entities/recipe.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class RecipeService {
@@ -13,14 +18,22 @@ export class RecipeService {
     private recipeRepository: Repository<Recipe>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
-  async create({ categoryId, ...createRecipeInput }: CreateRecipeInput) {
+  async create(
+    userId: string,
+    { categoryId, ...createRecipeInput }: CreateRecipeInput,
+  ) {
     const category = await this.searchCategory(categoryId);
+
+    const user = await this.userRepository.findOne(userId);
 
     const recipe = this.recipeRepository.create({
       ...createRecipeInput,
       category,
+      user,
     });
 
     return this.recipeRepository.save(recipe);
@@ -36,9 +49,14 @@ export class RecipeService {
 
   async update(
     id: string,
+    userId: string,
     { categoryId, ...updateRecipeInput }: UpdateRecipeInput,
   ) {
     const recipe = await this.searchRecipe(id);
+
+    if (recipe.user.id !== userId) {
+      throw new ForbiddenException('The recipe does not belong to you');
+    }
 
     const updatedRecipe = { ...recipe, ...updateRecipeInput };
 
@@ -51,8 +69,12 @@ export class RecipeService {
     return this.recipeRepository.save(updatedRecipe);
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
     const recipe = await this.searchRecipe(id);
+
+    if (recipe.user.id !== userId) {
+      throw new ForbiddenException('The recipe does not belong to you');
+    }
 
     await this.recipeRepository.delete(id);
 
@@ -61,6 +83,10 @@ export class RecipeService {
 
   async getRecipesByCategory(categoryId: string): Promise<Recipe[]> {
     return this.recipeRepository.find({ where: { category: categoryId } });
+  }
+
+  async getRecipesByUser(userId: string): Promise<Recipe[]> {
+    return this.recipeRepository.find({ where: { user: userId } });
   }
 
   private async searchCategory(categoryId: string) {
