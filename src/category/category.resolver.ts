@@ -22,7 +22,7 @@ import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 export class CategoryResolver {
   constructor(
     private readonly categoryService: CategoryService,
-    private readonly recipeServie: RecipeService,
+    private readonly recipeService: RecipeService,
   ) {}
 
   @Mutation(() => Category)
@@ -59,6 +59,6 @@ export class CategoryResolver {
 
   @ResolveField(() => [Recipe], { defaultValue: [] })
   async recipes(@Parent() category: Category) {
-    return this.recipeServie.getRecipesByCategory(category.id);
+    return this.recipeService.getRecipesByCategory(category.id);
   }
 }
