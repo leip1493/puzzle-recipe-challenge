@@ -10,12 +10,14 @@ import { AuthLoginInput } from './dto/auth-login.input';
 import { AuthRegisterInput } from './dto/auth-register.input.';
 import { UserToken } from './entities/user-token.entity';
 import { AuthHelper } from './auth-helper';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async login(input: AuthLoginInput): Promise<UserToken> {
@@ -68,7 +70,12 @@ export class AuthService {
     };
   }
 
+  public validateUser(userId: string) {
+    return this.userRepository.findOne(userId);
+  }
+
   private signToken(id: string) {
-    return id;
+    const payload = { userId: id };
+    return this.jwtService.sign(payload);
   }
 }
