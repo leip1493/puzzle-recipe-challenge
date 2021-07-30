@@ -5,6 +5,8 @@ import { CreateRecipeInput } from './dto/create-recipe.input';
 import { UpdateRecipeInput } from './dto/update-recipe.input';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { CtxUSer } from 'src/shared/decorators/ctx-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Resolver(() => Recipe)
 @UseGuards(GqlAuthGuard)
@@ -13,6 +15,7 @@ export class RecipeResolver {
 
   @Mutation(() => Recipe)
   createRecipe(
+    @CtxUSer() user: User,
     @Args('createRecipeInput') createRecipeInput: CreateRecipeInput,
   ) {
     return this.recipeService.create(createRecipeInput);
@@ -30,13 +33,17 @@ export class RecipeResolver {
 
   @Mutation(() => Recipe)
   updateRecipe(
+    @CtxUSer() user: User,
     @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
   ) {
     return this.recipeService.update(updateRecipeInput.id, updateRecipeInput);
   }
 
   @Mutation(() => Recipe, { name: 'deleteRecipe' })
-  removeRecipe(@Args('id', { type: () => ID }) id: string) {
+  removeRecipe(
+    @CtxUSer() user: User,
+    @Args('id', { type: () => ID }) id: string,
+  ) {
     return this.recipeService.remove(id);
   }
 }
