@@ -15,6 +15,7 @@ import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { CtxUSer } from 'src/shared/decorators/ctx-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { FilterRecipeInput } from './dto/filter-recipe.input';
 
 @Resolver(() => Recipe)
 @UseGuards(GqlAuthGuard)
@@ -30,13 +31,20 @@ export class RecipeResolver {
   }
 
   @Query(() => [Recipe], { name: 'getRecipes' })
-  findAll() {
-    return this.recipeService.findAll();
+  findAll(
+    @Args('filterRecipeInput', { nullable: true })
+    filterRecipeInput: FilterRecipeInput,
+  ) {
+    return this.recipeService.findAll(filterRecipeInput);
   }
 
   @Query(() => [Recipe], { name: 'getMyRecipes' })
-  getMyRecipes(@CtxUSer() user: User) {
-    return this.recipeService.getRecipesByUser(user.id);
+  getMyRecipes(
+    @CtxUSer() user: User,
+    @Args('filterRecipeInput', { nullable: true })
+    filterRecipeInput: FilterRecipeInput,
+  ) {
+    return this.recipeService.getRecipesByUser(user.id, filterRecipeInput);
   }
 
   @Query(() => Recipe, { name: 'getOneRecipe', nullable: true })

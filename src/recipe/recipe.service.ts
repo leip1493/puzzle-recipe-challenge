@@ -3,13 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../category/entities/category.entity';
-import { Repository } from 'typeorm';
 import { CreateRecipeInput } from './dto/create-recipe.input';
 import { UpdateRecipeInput } from './dto/update-recipe.input';
 import { Recipe } from './entities/recipe.entity';
 import { User } from '../user/entities/user.entity';
+import { FilterRecipeInput } from './dto/filter-recipe.input';
 
 @Injectable()
 export class RecipeService {
@@ -39,8 +40,10 @@ export class RecipeService {
     return this.recipeRepository.save(recipe);
   }
 
-  findAll() {
-    return this.recipeRepository.find();
+  findAll(filterRecipeInput: FilterRecipeInput) {
+    const query = this.buildRecipeQuery(filterRecipeInput);
+
+    return this.recipeRepository.find(query);
   }
 
   findOne(id: string) {
@@ -85,8 +88,14 @@ export class RecipeService {
     return this.recipeRepository.find({ where: { category: categoryId } });
   }
 
-  async getRecipesByUser(userId: string): Promise<Recipe[]> {
-    return this.recipeRepository.find({ where: { user: userId } });
+  async getRecipesByUser(
+    userId: string,
+    filterRecipeInput?: FilterRecipeInput,
+  ): Promise<Recipe[]> {
+    const query = this.buildRecipeQuery(filterRecipeInput, { user: userId });
+
+    return this.recipeRepository.find(query);
+    // return this.recipeRepository.find({ where: { user: userId } });
   }
 
   private async searchCategory(categoryId: string) {
@@ -104,5 +113,35 @@ export class RecipeService {
       throw new NotFoundException('Recipe not found');
     }
     return recipe;
+  }
+
+  private buildRecipeQuery(
+    filterRecipeInput: FilterRecipeInput,
+    aditionalFilter: any = {},
+  ): {
+    where: any;
+  } {
+    const query: any = {
+      where: {},
+    };
+
+    if (filterRecipeInput?.name) {
+      query.where.name = Like(`%${filterRecipeInput.name}%`);
+    }
+
+    if (filterRecipeInput?.categoryId) {
+      query.where.category = filterRecipeInput.categoryId;
+    }
+
+    if (filterRecipeInput?.ingredient) {
+      query.where.ingredients = Like(`%${filterRecipeInput.ingredient}%`);
+    }
+
+    query.where = {
+      ...query.where,
+      ...aditionalFilter,
+    };
+
+    return query;
   }
 }
