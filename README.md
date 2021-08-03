@@ -28,9 +28,10 @@
 
 ## Installation
 
-```bash
-$ npm install
-```
+1.  Install MySQL database or use [Mysqldocker image](https://hub.docker.com/_/mysql) .
+2.  Create .env file in the root of the project, uses .env.example as template.
+3.  Configure the .env file using your credentials.
+4.  Install dependencies _npm install_.
 
 ## Running the app
 

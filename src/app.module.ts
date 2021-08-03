@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoryModule } from './category/category.module';
-import { RecipeModule } from './recipe/recipe.module';
-import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CategoryModule } from './category/category.module';
 import configuration from './config/configuration';
 import { EnviromentVariables } from './config/enviroment-variables.interface';
+import { RecipeModule } from './recipe/recipe.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -24,7 +24,11 @@ import { EnviromentVariables } from './config/enviroment-variables.interface';
       useFactory: async (
         configService: ConfigService<EnviromentVariables>,
       ) => ({
-        type: 'mysql',
+        ssl: true,
+        extra: {
+          ssl: { rejectUnauthorized: false },
+        },
+        type: 'postgres',
         host: configService.get('database.host'),
         port: configService.get('database.port'),
         username: configService.get('database.username'),
