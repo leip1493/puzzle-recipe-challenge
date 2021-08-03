@@ -1,5 +1,7 @@
 # Puzzle Recipe Challenge 💥
 
+[Playground](https://leip-puzzle-recipe-challenge.herokuapp.com/graphql)
+
 ## Description
 
 Api for recipe management using GraphQL.
@@ -14,7 +16,7 @@ Api for recipe management using GraphQL.
 
 ## Setup
 
-1.  Install MySQL database or use [Mysql docker image](https://hub.docker.com/_/mysql) .
+1.  Install MySQL database or use [Mysql docker image](https://hub.docker.com/_/mysql)
 2.  Create .env file in the root of the project, uses .env.example as template.
 3.  Configure the .env file using your credentials.
 4.  Install dependencies _npm install_.
