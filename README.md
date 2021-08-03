@@ -8,6 +8,8 @@ Api for recipe management using GraphQL.
 
 ## Developed using
 
+- [Node v16.2.0](https://nodejs.org/es/)
+- [NPM v7.13.0](https://docs.npmjs.com/)
 - [Nest](https://docs.nestjs.com/)
 - [GraphQL](https://graphql.org/)
 - [TypeORM](https://typeorm.io/#/)
