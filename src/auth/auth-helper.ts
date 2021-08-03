@@ -1,4 +1,4 @@
-import { compare, hash } from 'bcrypt';
+import { compare, hash } from 'bcryptjs';
 
 export class AuthHelper {
   static validate(password: string, hashedPassword: string) {
