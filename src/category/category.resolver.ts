@@ -16,6 +16,7 @@ import { RecipeService } from '../recipe/recipe.service';
 import { Recipe } from 'src/recipe/entities/recipe.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
+import { FilterCategoryInput } from './dto/filter-category.input';
 
 @Resolver(() => Category)
 @UseGuards(GqlAuthGuard)
@@ -33,8 +34,11 @@ export class CategoryResolver {
   }
 
   @Query(() => [Category], { name: 'getCategories' })
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(
+    @Args('filterCategoryInput', { nullable: true })
+    filterCategoryInput: FilterCategoryInput,
+  ) {
+    return this.categoryService.findAll(filterCategoryInput);
   }
 
   @Query(() => Category, { name: 'getOneCategory', nullable: true })

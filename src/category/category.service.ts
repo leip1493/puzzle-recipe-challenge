@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateCategoryInput } from './dto/create-category.input';
+import { FilterCategoryInput } from './dto/filter-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { Category } from './entities/category.entity';
 
@@ -18,8 +19,10 @@ export class CategoryService {
     return this.categoryRepository.save(category);
   }
 
-  findAll() {
-    return this.categoryRepository.find();
+  findAll(filterCategoryInput: FilterCategoryInput) {
+    const query: any = this.buildCategoryQuery(filterCategoryInput);
+
+    return this.categoryRepository.find(query);
   }
 
   findOne(id: string) {
@@ -48,5 +51,16 @@ export class CategoryService {
       throw new NotFoundException('Category not found');
     }
     return category;
+  }
+
+  private buildCategoryQuery(filterCategoryInput: FilterCategoryInput) {
+    const query: any = {
+      where: {},
+    };
+
+    if (filterCategoryInput?.name) {
+      query.where.name = Like(`%${filterCategoryInput.name}%`);
+    }
+    return query;
   }
 }
