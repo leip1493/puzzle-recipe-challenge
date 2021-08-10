@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { EnviromentVariables } from './config/enviroment-variables.interface';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -42,5 +43,6 @@ import { EnviromentVariables } from './config/enviroment-variables.interface';
     UserModule,
     AuthModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
