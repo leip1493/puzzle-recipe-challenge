@@ -1,6 +1,7 @@
 # Puzzle Recipe Challenge 💥
-
-[Playground](https://leip-puzzle-recipe-challenge.herokuapp.com/graphql)
+<!---
+ [Playground](https://leip-puzzle-recipe-challenge.herokuapp.com/graphql)
+-->
 
 ## Description
 
